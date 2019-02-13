@@ -42,7 +42,7 @@ You should have setup Waze integration and zones in HomeAssistant.
 | Name | Type | Requirement | `Default` Description
 | ---- | ---- | ------- | -----------
 | entity | string | **Required** | The waze sensor entitiy to use 
-| zone | string | **Optional** | The zone to map the route with
+| zone | string | **Optional** | Used to enable click to open waze app (needs coordinates to work)
 | name | string | **Optional** | `friendly_name from Waze config` The name of the route
 
 
@@ -81,7 +81,7 @@ or minimum setup (disables clicking to open waze):
 ```
 views:
   cards:
-    - type: custom:waze-card
+    - type: custom:waze-cardq
       entities:
         - entity: sensor.waze_home
         - entity: sensor.waze_work
