@@ -42,7 +42,7 @@ You should have setup Waze integration and zones in HomeAssistant.
 | Name | Type | Requirement | `Default` Description
 | ---- | ---- | ------- | -----------
 | entity | string | **Required** | The waze sensor entitiy to use 
-| zone | string | **Required** | The zone to map the route with
+| zone | string | **Optional** | The zone to map the route with
 | name | string | **Optional** | `friendly_name from Waze config` The name of the route
 
 
@@ -57,7 +57,7 @@ In your ui-lovelace.yaml
 
 ```
 resources:
-  - url: /local/waze-card/waze-card.js?v=1.1.2
+  - url: /local/waze-card/waze-card.js?v=1.1.3
     type: js
 ```
 
@@ -68,10 +68,21 @@ views:
   cards:
     - type: custom:waze-card
       entities:
-        - entity: sensor.waze_home
-          zone: zone.home
+        - entity: sensor.waze_home # used to show data on card
+          zone: zone.home # needed to get lat/long for clicking on waze route
           name: Home
         - entity: sensor.waze_work
           zone: zone.work
           name: Work
+```
+
+or minimum setup (disables clicking to open waze):
+
+```
+views:
+  cards:
+    - type: custom:waze-card
+      entities:
+        - entity: sensor.waze_home
+        - entity: sensor.waze_work
 ```

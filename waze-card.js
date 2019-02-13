@@ -22,37 +22,39 @@ class WazeCard extends HTMLElement {
     return entities
       .map(entity => {
         const state = this._hass.states[entity.entity || ''];
-        const zone = this._hass.states[entity.zone || ''];
+        if (!state) return;
 
-        if (state && zone) {
-          state.name = entity.name || zone.attributes.friendly_name;
+        state.name = entity.name || state.attributes.friendly_name;
+
+        // if given a zone then att lat/long  for clicking to open waze
+        if (entity.zone) {
+          const zone = this._hass.states[entity.zone || ''];
           state.location = { lat: zone.attributes.latitude, long: zone.attributes.longitude };
-          return state;
+          state.name = state.name ? state.name : zone.attributes.friendly_name
         }
+
+        return state;
       })
-      .filter(Boolean);
+      .filter(Boolean)
+      .map(state => {
+        return {
+          location: state.location || '',
+          name: state.name || state.entity || '',
+          distance: this.computeDistance(state),
+          duration: this.computeDuration(state),
+          route: state.attributes && state.attributes.route || ''
+        };
+      });
   }
 
   /**
    * Updates the HTML if anything has changed
+   * @param {Array<Object>} wazeStates
    */
   updateHtmlIfNecessary(wazeStates) {
-    const nextStates = wazeStates.map(state => {
-      return {
-        location: state.location,
-        name: state.name || state.entity || '',
-        distance: this.computeDistance(state),
-        duration: this.computeDuration(state),
-        route: state.attributes && state.attributes.route || ''
-      };
-    });
+    if (JSON.stringify(wazeStates) === JSON.stringify(this.currentStates || [])) return;
 
-    // if data is the same as last time then do nothing
-    if (JSON.stringify(nextStates) === JSON.stringify(this.currentStates || [])) {
-      return;
-    }
-
-    this.currentStates = nextStates;
+    this.currentStates = wazeStates;
     this.createCard();
   }
 
@@ -74,11 +76,9 @@ class WazeCard extends HTMLElement {
    */
   computeDistance(state) {
     let distance = state.attributes && state.attributes.distance || 0;
-    console.log({ distance });
+    if (this._hass.config.unit_system.length === 'mi') distance = distance * 0.62137;
 
-    if (this._hass.config.unit_system.length !== 'mi') distance = distance * 1.60934;
-
-    distance = parseFloat(Math.round(distance * 100) / 100).toFixed(2);
+    distance = parseInt(Math.round(distance));
     distance = `${distance}${this._hass.config.unit_system.length}`;
     return distance;
   }
@@ -129,12 +129,19 @@ class WazeCard extends HTMLElement {
     const stateBody = document.createElement('tbody');
     stateBody.classList.add('waze-card-route-body');
 
+
+
     this.currentStates.map(state => {
       const location = state.location && JSON.stringify(state.location);
 
       const stateRouteRow = document.createElement('tr');
       stateRouteRow.classList.add('waze-card-route-row');
-      stateRouteRow.dataset.location = location;
+
+      // if we have a location then add pointer and location data
+      if (location) {
+        stateBody.classList.add('waze-card-pointer');
+        stateRouteRow.dataset.location = location;
+      }
 
       // for each value create a HTML column
       this.config.columns.forEach(column => {
@@ -217,7 +224,7 @@ class WazeCard extends HTMLElement {
             text-transform: capitalize;
           }   
 
-          .waze-card-route-body {
+          .waze-card-pointer {
             cursor: pointer;
           }
 
