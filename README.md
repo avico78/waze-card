@@ -57,7 +57,7 @@ In your ui-lovelace.yaml
 
 ```
 resources:
-  - url: /local/waze-card/waze-card.js?v=1.1.3
+  - url: /local/waze-card/waze-card.js?v=1.2.0
     type: js
 ```
 
