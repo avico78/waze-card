@@ -29,6 +29,8 @@ class WazeCard extends HTMLElement {
         // if given a zone then att lat/long  for clicking to open waze
         if (entity.zone) {
           const zone = this._hass.states[entity.zone || ''];
+          if (!zone) throw new Error(`Could not find config for zone entity ${entity.zone}`);
+
           state.location = { lat: zone.attributes.latitude, long: zone.attributes.longitude };
           state.name = state.name ? state.name : zone.attributes.friendly_name
         }
@@ -76,8 +78,6 @@ class WazeCard extends HTMLElement {
    */
   computeDistance(state) {
     let distance = state.attributes && state.attributes.distance || 0;
-    if (this._hass.config.unit_system.length === 'mi') distance = distance * 0.62137;
-
     distance = parseInt(Math.round(distance));
     distance = `${distance}${this._hass.config.unit_system.length}`;
     return distance;

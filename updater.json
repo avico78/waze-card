@@ -1,7 +1,7 @@
 {
     "waze-card": {
-      "updated_at": "2019-02-13",
-      "version": "1.2.0",
+      "updated_at": "2019-02-18",
+      "version": "1.2.1",
       "remote_location": "https://raw.githubusercontent.com/ljmerza/waze-card/master/waze-card.js",
       "visit_repo": "https://github.com/ljmerza/waze-card",
       "changelog": "https://github.com/ljmerza/waze-card/releases/latest"
