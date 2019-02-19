@@ -47,17 +47,14 @@ You should have setup Waze integration and zones in HomeAssistant.
 
 
 <h2>Configuration</h2>
-Go to your config directory and create a www folder. Inside the www run
 
-```
-git clone https://github.com/ljmerza/waze-card.git
-```
+Download `waze-card.js` from the [latest release](https://github.com/ljmerza/waze-card/releases/latest/) and upload it your /www folder of your Home Assistant config directory.
 
 In your ui-lovelace.yaml
 
 ```
 resources:
-  - url: /local/waze-card/waze-card.js?v=1.2.1
+  - url: /local/waze-card/waze-card.js?v=2.0.0
     type: js
 ```
 
