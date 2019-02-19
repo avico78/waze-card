@@ -20,7 +20,7 @@ In your configuration.yaml
 ```
 custom_updater:
   card_urls:
-    - https://raw.githubusercontent.com/ljmerza/waze-card/master/updater.json
+    - https://raw.githubusercontent.com/ljmerza/waze-card/master/custom_updater.json
 ```
 
 <h1>Usage</h1>
