@@ -36,7 +36,7 @@ You should have setup Waze integration and zones in HomeAssistant.
 | title | string | **Optional** | `Waze Routes` Header text shown at top of card
 | entities | object | **Required** | List of routes to display
 | columns | list | **Optional** | `name, distance, duration, route` Which columns to display
-| flip_distance | boolean | **Optional** | `false` Override HA distance unit settings (metric to imperial and vise versa)
+| custom_distance | string | **Optional** |  Override HA distance unit settings (set to `km` or `mi`)
 | custom_distance_units | string | **Optional** | `HA default setting` Override units string (`km` or `mi`)
 
 <h3>`entities` Options:</h3>

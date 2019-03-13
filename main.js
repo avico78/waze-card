@@ -25,11 +25,15 @@ class WazeCard extends LitElement {
       throw new Error('columns config needs to be a list');
     }
 
+    if (config.custom_distance && !['km', 'mi'].includes(config.custom_distance)) {
+      throw new Error('custom_distance config needs to be either `km` or `mi`');
+    }
+
     this.config = {
       title: 'Waze Routes',
       header: true,
       columns: ['name', 'distance', 'duration', 'route'],
-      flip_distance: false,
+      custom_distance: '',
       custom_distance_units: '',
       ...config,
     };
@@ -161,14 +165,12 @@ class WazeCard extends LitElement {
     distance = parseInt(Math.round(distance), 0);
     let distance_units = this.hass.config.unit_system.length;
 
-    if (this.config.flip_distance && distance_units === 'mi') {
-      distance_units = 'km';
-      distance = distance *= 1.60934;
-    } else if (this.config.flip_distance && distance_units === 'km') {
-      distance_units = 'mi';
-      distance = distance *= 0.62137;
+    if (this.config.custom_distance) {
+      distance_units = this.config.custom_distance;
+      distance = distance *= this.config.custom_distance === 'km' ? 1.60934 : 0.62137;
     }
 
+    distance = distance.toFixed(1);
     return `${distance}${this.config.custom_distance_units || distance_units}`;
   }
 }
