@@ -29,6 +29,8 @@ class WazeCard extends LitElement {
       title: 'Waze Routes',
       header: true,
       columns: ['name', 'distance', 'duration', 'route'],
+      flip_distance: false,
+      custom_distance_units: '',
       ...config,
     };
   }
@@ -38,7 +40,10 @@ class WazeCard extends LitElement {
    * @return {Number}
    */
   getCardSize() {
-    return this.config && this.config.header ? 4 : 3;
+    const headerHeight = (this.config && this.config.header) ? 1 : 0;
+    const tableHeight = (this.config && this.config.entities) ? this.config.entities.length * 1 : 0;
+
+    return headerHeight + tableHeight;
   }
 
   static get styles() {
@@ -148,14 +153,23 @@ class WazeCard extends LitElement {
 
   /**
    * computes the distance for a route for metric/imperial system
-   * @param  {Object} state the card state
+   * @param {Object} state the card state
    * @return {string} the formatted distance
    */
   computeDistance(state) {
     let distance = state.attributes && state.attributes.distance || 0;
     distance = parseInt(Math.round(distance), 0);
-    distance = `${distance}${this.hass.config.unit_system.length}`;
-    return distance;
+    let distance_units = this.hass.config.unit_system.length;
+
+    if (this.config.flip_distance && distance_units === 'mi') {
+      distance_units = 'km';
+      distance = distance *= 1.60934;
+    } else if (this.config.flip_distance && distance_units === 'km') {
+      distance_units = 'mi';
+      distance = distance *= 0.62137;
+    }
+
+    return `${distance}${this.config.custom_distance_units || distance_units}`;
   }
 }
 
