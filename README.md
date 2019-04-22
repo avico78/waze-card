@@ -80,7 +80,7 @@ or minimum setup (disables clicking to open waze):
 ```
 views:
   cards:
-    - type: custom:waze-cardq
+    - type: custom:waze-card
       entities:
         - entity: sensor.waze_home
         - entity: sensor.waze_work
